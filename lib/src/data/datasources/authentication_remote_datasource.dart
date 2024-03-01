@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:tdd_clean_architecture/core/errors/exception.dart';
 import 'package:tdd_clean_architecture/src/data/models/user_model.dart';

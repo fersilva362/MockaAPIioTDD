@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<AuthenticationCubit>(),
       child: MaterialApp(
-          title: 'Flutter Demo',
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,

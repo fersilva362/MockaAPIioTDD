@@ -22,41 +22,41 @@ void main() {
     group('should complete succesfully when return 200 or 201 ', () {
       test('should completed succesfully when return 200 or 201', () async {
         when(
-          () => client.post(any(), body: any(named: 'body')),
+          () => client.post(any(),
+              body: any(named: 'body'), headers: any(named: 'headers')),
         ).thenAnswer(
             (_) async => http.Response('User created succesfully', 201));
 
         final response = remoteDataSource.createUser(
             createdAt: 'createdAt', name: 'name', avatar: 'avatar');
 
-        expect(response, completes);
+        expect(() => response, completes);
         verify(() => client.post(
             Uri.parse('https://65ae6f331dfbae409a74d30e.mockapi.io/users'),
-            body: jsonEncode({
-              'createdAt': 'createdAt',
-              'name': 'name',
-              'avatar': 'avatar'
-            }))).called(1);
+            body: jsonEncode(
+                {'createdAt': 'createdAt', 'name': 'name', 'avatar': 'avatar'}),
+            headers: {'Content-Type': 'application/json '})).called(1);
         verifyNoMoreInteractions(client);
       });
       test('should throw [ApiException] when return is not 200 or 201',
           () async {
         when(
-          () => client.post(any(), body: any(named: 'body')),
+          () => client.post(any(),
+              body: any(named: 'body'), headers: any(named: 'headers')),
         ).thenAnswer((_) async => http.Response('invalid name user', 400));
-        final result = remoteDataSource.createUser(
+        final result = await remoteDataSource.createUser(
             createdAt: 'createdAt', name: 'name', avatar: 'avatar');
+
         expect(
-            result,
+            () => result,
             throwsA(const ServerException(
                 message: 'invalid name user', statusCode: 400)));
         verify(() => client.post(
             Uri.parse('https://65ae6f331dfbae409a74d30e.mockapi.io/users'),
-            body: jsonEncode({
-              'createdAt': 'createdAt',
-              'name': 'name',
-              'avatar': 'avatar'
-            }))).called(1);
+            body: jsonEncode(
+              {'createdAt': 'createdAt', 'name': 'name', 'avatar': 'avatar'},
+            ),
+            headers: {'Content-Type': 'application/json '})).called(1);
         verifyNoMoreInteractions(client);
       });
     });

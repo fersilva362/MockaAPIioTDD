@@ -16,12 +16,20 @@ class _HomeScreenState extends State<HomeScreen> {
     await context.read<AuthenticationCubit>().getUser();
   }
 
-  final TextEditingController nameController = TextEditingController();
+  late TextEditingController nameController;
 
   @override
   void initState() {
     super.initState();
+    nameController = TextEditingController();
     getUsers();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    nameController.dispose();
   }
 
   @override
@@ -37,34 +45,81 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       builder: (context, state) {
         return Scaffold(
+          appBar: AppBar(
+            centerTitle: true,
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage('assets/imagesUSer_appBar.jpeg'))),
+            ),
+            title: const Text(
+              'User List',
+              style: TextStyle(color: Colors.white, fontSize: 28),
+            ),
+          ),
           body: state is GettingUser
               ? const LoadingColumn(message: 'Loading User')
               : state is CreatingUser
                   ? const LoadingColumn(message: 'Creating User')
                   : state is UserLoaded
-                      ? Center(
+                      ? Container(
+                          margin: const EdgeInsets.only(top: 10),
+                          height: MediaQuery.of(context).size.height * 0.80,
                           child: ListView.builder(
                             itemCount: state.users.length,
                             itemBuilder: (context, index) {
                               final user = state.users[index];
-                              return ListTile(
-                                leading: Image.network(user.avatar),
-                                title: Text(user.name),
-                                subtitle: Text(user.createdAt.substring(10)),
+                              return Container(
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 4, vertical: 2),
+                                decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color: Colors.grey,
+                                          offset: Offset(2, 2),
+                                          blurRadius: 1)
+                                    ]),
+                                padding: const EdgeInsets.all(5.0),
+                                child: ListTile(
+                                  leading: CircleAvatar(
+                                      radius: 30,
+                                      backgroundImage: NetworkImage(user.avatar)
+                                      //Image.network(),
+                                      ),
+                                  title: Text(
+                                    '${user.name[0].toUpperCase()}${user.name.substring(1)}',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  subtitle:
+                                      Text(user.createdAt.substring(0, 10)),
+                                ),
                               );
                             },
                           ),
                         )
                       : const SizedBox.shrink(),
           floatingActionButton: FloatingActionButton.extended(
-            icon: const Icon(Icons.add),
+            backgroundColor: const Color.fromRGBO(255, 55, 150, 1),
+            icon: const Icon(
+              Icons.add,
+              color: Colors.white,
+              size: 25,
+            ),
             onPressed: () {
               showDialog(
                 context: context,
                 builder: (context) => AddUser(nameController: nameController),
               );
+              nameController.text = '';
             },
-            label: const Text('Add user'),
+            label: const Text(
+              'Add User',
+              style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
           ),
         );
       },

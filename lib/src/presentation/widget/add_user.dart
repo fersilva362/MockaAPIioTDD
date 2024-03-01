@@ -12,7 +12,7 @@ class AddUser extends StatelessWidget {
       type: MaterialType.transparency,
       child: Center(
         child: Container(
-          margin: EdgeInsets.all(20),
+          margin: const EdgeInsets.all(20),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20), color: Colors.white),
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -20,21 +20,31 @@ class AddUser extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
+                enableSuggestions: false,
                 controller: nameController,
-                decoration: const InputDecoration(labelText: 'username'),
+                decoration: const InputDecoration(
+                  labelText: 'Username',
+                ),
+              ),
+              const SizedBox(
+                height: 10,
               ),
               ElevatedButton(
-                  onPressed: () {
-                    const avatar =
-                        'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/138.jpg';
-                    final name = nameController.text.trim();
-                    context.read<AuthenticationCubit>().createUser(
-                        createdAt: DateTime.now().toString(),
-                        name: name,
-                        avatar: avatar);
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Create User'))
+                onPressed: () {
+                  const avatar =
+                      'https://cloudflare-ipfs.com/ipfs/Qmd3W5DuhgHirLHGVixi6V76LhCkZUz6pnFt5AJBiyvHye/avatar/138.jpg';
+                  final name = nameController.text.trim();
+                  context.read<AuthenticationCubit>().createUser(
+                      createdAt: DateTime.now().toString(),
+                      name: name,
+                      avatar: avatar);
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Create User'),
+              ),
+              const SizedBox(
+                height: 10,
+              )
             ],
           ),
         ),
